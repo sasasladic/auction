@@ -4,13 +4,8 @@ namespace App\Command;
 
 use App\Auction\Creational\BuyersListFactory;
 use App\Auction\Entity\Auction;
-use App\Auction\Entity\Bid;
-use App\Auction\Creational\BidsFactory;
-use App\Auction\Creational\BuyerBuilder;
-use App\Auction\Creational\BuyersFactory;
 use App\Auction\Manager\AuctionManager;
 use App\Auction\Manager\AuctionOutput;
-use Faker\Factory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
