@@ -2,56 +2,72 @@
 
 namespace App\Tests;
 
+use App\Auction\Creational\BuyersListFactory;
+use App\Auction\Entity\Auction;
+use App\Auction\Manager\AuctionManager;
 use PHPUnit\Framework\TestCase;
-use App\Auction\Auction;
 
 class AuctionTest extends TestCase
 {
     public function testGetWinnerWithMultipleBids()
     {
+        $arr = [
+            'a'  => [110, 130],
+            'b' => [],
+            'c' => [125],
+            'd' => [105, 115, 200],
+            'e' => [132, 135, 140]
+        ];
+
         $auction = new Auction(100);
-        $auction->placeBid('A', 110);
-        $auction->placeBid('A', 130);
-        $auction->placeBid('C', 125);
-        $auction->placeBid('D', 105);
-        $auction->placeBid('D', 115);
-        $auction->placeBid('D', 200);
-        $auction->placeBid('E', 132);
-        $auction->placeBid('E', 135);
-        $auction->placeBid('E', 140);
+        $auctionManager = new AuctionManager($auction);
 
-        $winner = $auction->determineWinner();
+        $auctionManager->addBuyers(BuyersListFactory::generateBuyers($arr));
+        $results = $auctionManager->determineWinner();
 
-        $this->assertEquals(['winner' => 'D', 'winningPrice' => 140], $winner);
+        $this->assertEquals(['winner' => 'd', 'winningPrice' => 140], $results);
     }
 
     public function testGetWinnerWithNoBids()
     {
+        $arr = [];
         $auction = new Auction(100);
+        $auctionManager = new AuctionManager($auction);
 
-        $winner = $auction->determineWinner();
+        $auctionManager->addBuyers($arr);
+        $results = $auctionManager->determineWinner();
 
-        $this->assertEquals(['winner' => null, 'winningPrice' => 100], $winner);
+        $this->assertEquals(['winner' => null, 'winningPrice' => null], $results);
     }
 
     public function testGetWinnerWithNoValidBids()
     {
+        $arr = [
+            'a'  => [90],
+            'b' => [95]
+        ];
+
         $auction = new Auction(100);
-        $auction->placeBid('A', 90);
-        $auction->placeBid('B', 95);
+        $auctionManager = new AuctionManager($auction);
 
-        $winner = $auction->determineWinner();
+        $auctionManager->addBuyers(BuyersListFactory::generateBuyers($arr));
+        $results = $auctionManager->determineWinner();
 
-        $this->assertEquals(['winner' => null, 'winningPrice' => 100], $winner);
+        $this->assertEquals(['winner' => null, 'winningPrice' => 100], $results);
     }
 
     public function testDeterminingWinnerWithOneBidder()
     {
-        $auction = new Auction(150);
-        $auction->placeBid('A', 200);
+        $arr = [
+            'a'  => [200],
+        ];
 
-        $winner = $auction->determineWinner();
+        $auction = new Auction(100);
+        $auctionManager = new AuctionManager($auction);
 
-        $this->assertEquals(['winner' => 'A', 'winningPrice' => 150], $winner);
+        $auctionManager->addBuyers(BuyersListFactory::generateBuyers($arr));
+        $results = $auctionManager->determineWinner();
+
+        $this->assertEquals(['winner' => 'a', 'winningPrice' => 100], $results);
     }
 }
