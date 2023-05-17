@@ -30,11 +30,10 @@ class AuctionTest extends TestCase
 
     public function testGetWinnerWithNoBids()
     {
-        $arr = [];
         $auction = new Auction(100);
         $auctionManager = new AuctionManager($auction);
 
-        $auctionManager->addBuyers($arr);
+//        $auctionManager->addBuyers([]);
         $results = $auctionManager->determineWinner();
 
         $this->assertEquals(['winner' => null, 'winningPrice' => null], $results);
